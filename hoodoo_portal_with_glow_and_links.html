@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Hoodoo Alien Portal</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Georgia', serif;
+      background: url('hoodoo_portal_final_bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #f9f5e3;
+      text-align: center;
+    }
+    nav {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
+    }
+    nav a {
+      margin: 0 25px;
+      color: #e5c97c;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    h1 {
+      margin-top: 150px;
+      font-size: 3em;
+      color: #e5c97c;
+      text-shadow: 2px 2px 4px #000;
+    }
+    .blessing {
+      margin: 30px auto;
+      max-width: 600px;
+      font-style: italic;
+      font-size: 1.3em;
+      color: #ffd700;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px 25px;
+      border-radius: 12px;
+      text-shadow: 1px 1px 3px #000;
+    }
+    #chat-container {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 300px;
+      background: rgba(14, 14, 14, 0.95);
+      border-radius: 15px;
+      padding: 15px;
+      color: #fff;
+      box-shadow: 0 0 12px #FFD70055;
+    }
+    #chatbox {
+      height: 200px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+    }
+    #chatbox div {
+      margin: 5px 0;
+    }
+    #user-input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+    }
+    #chat-form {
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="rituals.html">Rituals</a>
+    <a href="psalms.html">Psalms</a>
+    <a href="quantum.html">Quantum Code</a>
+    <a href="#">Journal</a>
+  </nav>
+
+  <h1>The Hoodoo Alien Portal</h1>
+
+  <div class="blessing" id="daily-blessing"></div>
+
+  <div id="chat-container">
+    <div id="chatbox">
+      <div><em>Oraceile is listening...</em></div>
+    </div>
+    <form id="chat-form">
+      <input type="text" id="user-input" placeholder="Ask Oraceile..." />
+    </form>
+  </div>
+
+  <script>
+    const blessings = [
+      "Your name is rising in rooms your feet haven’t touched.",
+      "Today, the veil is thin. Speak — and the spirits respond.",
+      "Everything that left was not part of your anointing.",
+      "Your womb, your mind, your money — all are protected.",
+      "Walk like your prayers are already answered.",
+      "A divine reversal is already in motion.",
+      "You are cloaked in golden grace today.",
+      "Hearts, contracts, and timelines align in your favour."
+    ];
+    const daily = blessings[Math.floor(Math.random() * blessings.length)];
+    document.getElementById("daily-blessing").innerText = daily;
+
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('user-input');
+    const chatbox = document.getElementById('chatbox');
+    const API_KEY = "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";
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = input.value;
+      chatbox.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+      input.value = '';
+
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "You are Oraceile, a celestial African fairy guide who offers wisdom, spiritual clarity, and encouragement." },
+            { role: "user", content: message }
+          ]
+        })
+      });
+
+      const data = await response.json();
+      const reply = data.choices?.[0]?.message?.content || "I'm having trouble connecting to the stars.";
+      chatbox.innerHTML += `<div><strong>Oraceile:</strong> ${reply}</div>`;
+       const utterance = new SpeechSynthesisUtterance(reply);
+       utterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google UK English Female")) || speechSynthesis.getVoices()[0];
+       utterance.pitch = 1.2;
+       utterance.rate = 0.95;
+       speechSynthesis.speak(utterance);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    });
+  </script>
+
+    <div id="oraceile-voice" style="
+      position: fixed;
+      bottom: 90px;
+      left: 30px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #FFD700 0%, #000 70%);
+      box-shadow: 0 0 15px #FFD70088;
+      animation: pulse 2s infinite;
+      display: none;
+    "></div>
+
+    <style>
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 0.6; }
+        50% { transform: scale(1.4); opacity: 1; }
+        100% { transform: scale(1); opacity: 0.6; }
+      }
+    </style>
+
+    <script>
+      const glow = document.getElementById('oraceile-voice');
+      const speakWithGlow = (text) => {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.voice = speechSynthesis.getVoices().find(v => v.name.includes("Google UK English Female")) || speechSynthesis.getVoices()[0];
+        utter.pitch = 1.2;
+        utter.rate = 0.95;
+        glow.style.display = 'block';
+        utter.onend = () => { glow.style.display = 'none'; };
+        speechSynthesis.speak(utter);
+      };
+
+      const form = document.getElementById('chat-form');
+      const input = document.getElementById('user-input');
+      const chatbox = document.getElementById('chatbox');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const message = input.value;
+        chatbox.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+        input.value = '';
+
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer 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"
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [
+              { role: "system", content: "You are Oraceile, a celestial African fairy guide who offers wisdom, spiritual clarity, and encouragement." },
+              { role: "user", content: message }
+            ]
+          })
+        });
+
+        const data = await response.json();
+        const reply = data.choices?.[0]?.message?.content || "I'm having trouble connecting to the stars.";
+        chatbox.innerHTML += `<div><strong>Oraceile:</strong> ${reply}</div>`;
+        chatbox.scrollTop = chatbox.scrollHeight;
+        speakWithGlow(reply);
+      });
+    </script>
+    </body>
+    
+</html>
